@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jmas_movil/controllers/auth_service.dart';
 import 'package:jmas_movil/general/login_screen.dart';
 import 'package:jmas_movil/movimientos/entradas/add_entrada_screen.dart';
+import 'package:jmas_movil/movimientos/salidas/add_salida_screen.dart';
 import 'package:jmas_movil/productos/list_producto_screen.dart';
 import 'package:jmas_movil/widgets/componentes.dart';
 
@@ -46,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
     const ListProductoScreen(),
     const AddEntradaScreen(),
+    const AddSalidaScreen(),
   ];
 
   @override
@@ -171,9 +173,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: Icons.outgoing_mail,
                             children: [
                               CustomListTile(
-                                title: 'Agregar entrada',
+                                title: 'Agregar salida',
                                 icon: Icons.move_down,
-                                onTap: () {},
+                                onTap: () {
+                                  setState(() {
+                                    _selectedPageIndex = 3;
+                                  });
+                                  Navigator.pop(context);
+                                },
                               ),
                             ],
                           ),
