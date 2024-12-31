@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:jmas_movil/widgets/mensajes.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
@@ -156,6 +157,44 @@ class BuscarProductoWidget extends StatelessWidget {
     required this.onAdvertencia,
   }) : super(key: key);
 
+  void _openScanner(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Escanee código'),
+        content: SizedBox(
+          width: 300,
+          height: 400,
+          child: MobileScanner(
+            onDetect: (BarcodeCapture barcodeCapture) {
+              final barcode = barcodeCapture.barcodes.first;
+              if (barcode.rawValue != null) {
+                idProductoController.text = barcode.rawValue!;
+                Navigator.pop(context);
+                _buscarProducto();
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _buscarProducto() async {
+    final id = idProductoController.text;
+    if (id.isNotEmpty) {
+      onProductoSeleccionado(null); // Limpiar el producto antes de buscar
+      final producto = await productosController.getProductoById(int.parse(id));
+      if (producto != null) {
+        onProductoSeleccionado(producto);
+      } else {
+        onAdvertencia('Producto con ID: $id, no encontrado');
+      }
+    } else {
+      onAdvertencia('Por favor, ingrese un ID de producto.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -195,25 +234,14 @@ class BuscarProductoWidget extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.qr_code_scanner),
                   color: Colors.blue.shade900,
-                  onPressed: () async {},
+                  onPressed: () {
+                    _openScanner(context);
+                  },
                 ),
                 //Buscar producto
                 ElevatedButton(
-                  onPressed: () async {
-                    final id = idProductoController.text;
-                    if (id.isNotEmpty) {
-                      onProductoSeleccionado(
-                          null); // Limpiar el producto antes de buscar
-                      final producto = await productosController
-                          .getProductoById(int.parse(id));
-                      if (producto != null) {
-                        onProductoSeleccionado(producto);
-                      } else {
-                        onAdvertencia('Producto con ID: $id, no encontrado');
-                      }
-                    } else {
-                      onAdvertencia('Por favor, ingrese un ID de producto.');
-                    }
+                  onPressed: () {
+                    _buscarProducto();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue.shade900,
