@@ -19,8 +19,8 @@ dependencies:
   printing: ^5.13.4 #Imprimir
   path_provider: ^2.1.5 #Archivos sistema
   file_picker: ^8.1.6 #Seleccionar carpeta
-  permission_handler: ^11.3.1
-  mobile_scanner: ^6.0.2
+  permission_handler: ^10.0.0 #Ruta de archivo
+  mobile_scanner: ^6.0.2 #Scanner QR/Barras  
 
 dev_dependencies:
   flutter_test:
