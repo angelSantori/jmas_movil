@@ -432,7 +432,7 @@ class _AddEntradaScreenState extends State<AddEntradaScreen> {
 
                           if (!datosCompletos) {
                             return;
-                          }
+                          }                          
 
                           await generateAndSavePdf(
                             context: context,

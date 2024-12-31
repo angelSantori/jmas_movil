@@ -604,6 +604,30 @@ Future<void> generateAndPrintPdf({
   }
 }
 
+bool isPermissionRequested = false;
+
+Future<void> requestStoragePermission() async {
+  if (isPermissionRequested) return; // Evitar solicitudes simultáneas.
+
+  isPermissionRequested = true;
+
+  try {
+    PermissionStatus status = await Permission.storage.request();
+    if (status.isGranted) {
+      print('Permiso concedido');
+    } else if (status.isPermanentlyDenied) {
+      print('Permiso permanentemente denegado');
+      openAppSettings(); // Abre la configuración para que el usuario permita el permiso manualmente.
+    } else {
+      print('Permiso denegado');
+    }
+  } catch (e) {
+    print('Error al solicitar permiso: $e');
+  }
+
+  isPermissionRequested = false;
+}
+
 Future<void> generateAndSavePdf({
   required BuildContext context,
   required String movimiento,
@@ -623,29 +647,45 @@ Future<void> generateAndSavePdf({
     (sum, producto) => sum + (producto['precio'] ?? 0.0),
   );
 
-  // Obtener tamaño dinámico para dispositivos móviles
-  final pageFormat = PdfPageFormat(
-    210 * PdfPageFormat.mm, // A4 width in mm
-    297 * PdfPageFormat.mm, // A4 height in mm
-  );
-
-  // Generar contenido del PDF
+  // Crear el PDF
   pdf.addPage(
     pw.Page(
-      pageFormat: pageFormat,
       build: (pw.Context context) {
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('Reporte de $movimiento',
-                style: const pw.TextStyle(fontSize: 18)),
+            pw.Align(
+              alignment: pw.Alignment.center, // Centra el título
+              child: pw.Text(
+                'Reporte de $movimiento',
+                style: const pw.TextStyle(fontSize: 18),
+              ),
+            ),
             pw.SizedBox(height: 12),
-            pw.Text('Fecha: $fecha'),
-            pw.Text('Referencia: $referencia'),
-            pw.Text('Proveedor: $proveedor'),
-            pw.Text('Entidad: $entidad'),
-            pw.Text('Junta: $junta'),
-            pw.Text('Usuario: $usuario'),
+            pw.Text(
+              'Fecha: $fecha',
+              textAlign: pw.TextAlign.left, // Alineación a la izquierda
+            ),
+            pw.Text(
+              'Referencia: $referencia',
+              textAlign: pw.TextAlign.left, // Alineación a la izquierda
+            ),
+            pw.Text(
+              'Proveedor: $proveedor',
+              textAlign: pw.TextAlign.left, // Alineación a la izquierda
+            ),
+            pw.Text(
+              'Entidad: $entidad',
+              textAlign: pw.TextAlign.left, // Alineación a la izquierda
+            ),
+            pw.Text(
+              'Junta: $junta',
+              textAlign: pw.TextAlign.left, // Alineación a la izquierda
+            ),
+            pw.Text(
+              'Usuario: $usuario',
+              textAlign: pw.TextAlign.left, // Alineación a la izquierda
+            ),
             pw.SizedBox(height: 12),
             pw.Table.fromTextArray(
               headers: ['Clave', 'Descripción', 'Costo', 'Cantidad', 'Total'],
@@ -668,38 +708,33 @@ Future<void> generateAndSavePdf({
   );
 
   try {
-    // Solicitar permisos de almacenamiento (para Android)
-    PermissionStatus status = await Permission.storage.request();
-    if (!status.isGranted) {
-      print('Permiso denegado');
+    // Esperar a que el permiso se haya concedido antes de continuar.
+    await requestStoragePermission();
+
+    // Obtener la ruta del almacenamiento
+    final directory = Directory('/storage/emulated/0/Download');
+
+    if (!await directory.exists()) {
+      print('La carpeta Descargas no existe.');
       return;
     }
 
-    // Abrir el selector de archivos para elegir la ubicación
-    FilePickerResult? result = (await FilePicker.platform.saveFile(
-      dialogTitle: 'Guardar archivo PDF',
-      fileName:
-          'entrada_reporte_${DateFormat('ddMMyyyy').format(DateTime.now())}.pdf',
-    )) as FilePickerResult?;
+    final String directoryPath = directory.path;
 
-    if (result == null) {
-      print('El usuario canceló la selección');
-      return;
-    }
+    // Obtener la fecha y hora actual
+    final currentTime = DateTime.now();
+    final formattedDate = DateFormat('ddMMyyyy_HHmmss').format(currentTime);
 
-    // Obtener la ruta seleccionada
-    String filePath = result.files.single.path!;
+    // Definir el nombre del archivo PDF
+    final fileName = '${movimiento}_reporte_$formattedDate.pdf';
+    final filePath = '$directoryPath/$fileName';
 
-    // Guardar el archivo PDF en la ubicación seleccionada
+    // Guardar el archivo PDF en la carpeta predeterminada
     final file = File(filePath);
     await file.writeAsBytes(await pdf.save());
 
     print('PDF guardado en: $filePath');
-
-    // Notificar al usuario que el archivo se guardó correctamente
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('PDF guardado en: $filePath')),
-    );
+    showOk(context, 'PDF guardado en la carpeta Download');
   } catch (e) {
     print('Error al guardar el PDF: $e');
   }
