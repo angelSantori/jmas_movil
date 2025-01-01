@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:jmas_movil/controllers/productos_controller.dart';
 
@@ -47,14 +49,21 @@ class _ListProductoScreenState extends State<ListProductoScreen> {
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(10),
                   leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.asset(
-                      'assets/images/sinFoto.jpg',
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                      borderRadius: BorderRadius.circular(8),
+                      child: producto.producto_ImgBase64 != null &&
+                              producto.producto_ImgBase64!.isNotEmpty
+                          ? Image.memory(
+                              base64Decode(producto.producto_ImgBase64!),
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              'assets/images/sinFoto.jpg',
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            )),
                   title: Text(
                     producto.producto_Descripcion!,
                     style: const TextStyle(
