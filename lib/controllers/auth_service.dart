@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String apiURL = 'https://192.168.0.3:7048/api'; //CASA
+  //final String apiURL = 'https://192.168.0.3:7048/api'; //CASA
+  final String apiURL = 'https://192.168.0.8:7048/api'; //CASA Paloma
 
   //Save token en almacenamiento local
   Future<void> saveToken(String token) async {
