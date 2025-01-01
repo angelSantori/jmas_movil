@@ -21,6 +21,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isLoading = false;
 
+  bool _isPasswordVisible = false;
+  bool _isAccesVisible = false;
+
   void _submitForm() async {
     setState(() {
       _isLoading = true;
@@ -75,8 +78,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   label: 'Acceso',
                   child: TextFormField(
                     controller: _accesUser,
-                    decoration:
-                        const InputDecoration(labelText: 'Acceso de usuario'),
+                    decoration: InputDecoration(
+                      labelText: 'Acceso de usuario',
+                      suffixIcon: IconButton(
+                        icon: Icon(_isAccesVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            _isAccesVisible = !_isAccesVisible;
+                          });
+                        },
+                      ),
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Introduce acceso';
@@ -86,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     inputFormatters: [
                       FilteringTextInputFormatter.deny(RegExp(r'\s'))
                     ],
-                    obscureText: true,
+                    obscureText: !_isAccesVisible,
                   ),
                 ),
 
@@ -94,11 +108,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 //Pass
                 buildFormRow(
-                  label: 'Contrasela',
+                  label: 'Contraseña',
                   child: TextFormField(
                     controller: _password,
-                    decoration: const InputDecoration(
-                        labelText: 'Contraseña de usuario'),
+                    decoration: InputDecoration(
+                      labelText: 'Contraseña de usuario',
+                      suffixIcon: IconButton(
+                        icon: Icon(_isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Contraseña requerida';
@@ -108,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     inputFormatters: [
                       FilteringTextInputFormatter.deny(RegExp(r'\s'))
                     ],
-                    obscureText: true,
+                    obscureText: !_isPasswordVisible,
                   ),
                 ),
 
