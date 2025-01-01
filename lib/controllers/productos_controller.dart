@@ -1,6 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/io_client.dart';
+
 import 'package:jmas_movil/controllers/auth_service.dart';
 
 class ProductosController {
@@ -130,6 +133,7 @@ class Productos {
   double? producto_ExistenciaInicial;
   double? producto_ExistenciaConFis;
   String? producto_QR64;
+  String? producto_ImgBase64;
   Productos({
     this.id_Producto,
     this.producto_Descripcion,
@@ -142,6 +146,7 @@ class Productos {
     this.producto_ExistenciaInicial,
     this.producto_ExistenciaConFis,
     this.producto_QR64,
+    this.producto_ImgBase64,
   });
 
   Productos copyWith({
@@ -156,6 +161,7 @@ class Productos {
     double? producto_ExistenciaInicial,
     double? producto_ExistenciaConFis,
     String? producto_QR64,
+    String? producto_ImgBase64,
   }) {
     return Productos(
       id_Producto: id_Producto ?? this.id_Producto,
@@ -171,6 +177,7 @@ class Productos {
       producto_ExistenciaConFis:
           producto_ExistenciaConFis ?? this.producto_ExistenciaConFis,
       producto_QR64: producto_QR64 ?? this.producto_QR64,
+      producto_ImgBase64: producto_ImgBase64 ?? this.producto_ImgBase64,
     );
   }
 
@@ -187,6 +194,7 @@ class Productos {
       'producto_ExistenciaInicial': producto_ExistenciaInicial,
       'producto_ExistenciaConFis': producto_ExistenciaConFis,
       'producto_QR64': producto_QR64,
+      'producto_ImgBase64': producto_ImgBase64,
     };
   }
 
@@ -237,6 +245,9 @@ class Productos {
           : null,
       producto_QR64:
           map['producto_QR64'] != null ? map['producto_QR64'] as String : null,
+      producto_ImgBase64: map['producto_ImgBase64'] != null
+          ? map['producto_ImgBase64'] as String
+          : null,
     );
   }
 
@@ -247,7 +258,7 @@ class Productos {
 
   @override
   String toString() {
-    return 'Productos(id_Producto: $id_Producto, producto_Descripcion: $producto_Descripcion, producto_Costo: $producto_Costo, producto_UMedida: $producto_UMedida, producto_Precio1: $producto_Precio1, producto_Precio2: $producto_Precio2, producto_Precio3: $producto_Precio3, producto_Existencia: $producto_Existencia, producto_ExistenciaInicial: $producto_ExistenciaInicial, producto_ExistenciaConFis: $producto_ExistenciaConFis, producto_QR64: $producto_QR64)';
+    return 'Productos(id_Producto: $id_Producto, producto_Descripcion: $producto_Descripcion, producto_Costo: $producto_Costo, producto_UMedida: $producto_UMedida, producto_Precio1: $producto_Precio1, producto_Precio2: $producto_Precio2, producto_Precio3: $producto_Precio3, producto_Existencia: $producto_Existencia, producto_ExistenciaInicial: $producto_ExistenciaInicial, producto_ExistenciaConFis: $producto_ExistenciaConFis, producto_QR64: $producto_QR64, producto_ImgBase64: $producto_ImgBase64)';
   }
 
   @override
@@ -264,7 +275,8 @@ class Productos {
         other.producto_Existencia == producto_Existencia &&
         other.producto_ExistenciaInicial == producto_ExistenciaInicial &&
         other.producto_ExistenciaConFis == producto_ExistenciaConFis &&
-        other.producto_QR64 == producto_QR64;
+        other.producto_QR64 == producto_QR64 &&
+        other.producto_ImgBase64 == producto_ImgBase64;
   }
 
   @override
@@ -279,6 +291,7 @@ class Productos {
         producto_Existencia.hashCode ^
         producto_ExistenciaInicial.hashCode ^
         producto_ExistenciaConFis.hashCode ^
-        producto_QR64.hashCode;
+        producto_QR64.hashCode ^
+        producto_ImgBase64.hashCode;
   }
 }
