@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                buildFormRow(
+                buildFormColumn(
                   label: 'Acceso',
                   child: TextFormField(
                     controller: _accesUser,
@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
 
                 //Pass
-                buildFormRow(
+                buildFormColumn(
                   label: 'Contraseña',
                   child: TextFormField(
                     controller: _password,
