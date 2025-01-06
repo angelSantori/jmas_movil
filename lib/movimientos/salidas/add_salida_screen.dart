@@ -436,7 +436,7 @@ class _AddSalidaScreenState extends State<AddSalidaScreen> {
 
                           await generateAndSavePdf(
                             context: context,
-                            movimiento: 'Entrada',
+                            movimiento: 'Salida',
                             fecha: _fecha,
                             referencia: _referenciaController.text,
                             proveedor: _selectedProveedor?.proveedor_Name ??
